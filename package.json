@@ -12,6 +12,10 @@
   "dependencies": {
     "@effect/cli": "^0.69.0",
     "@effect/platform-bun": "^0.77.0",
-    "cloudflare": "^4.5.0"
+    "cloudflare": "^4.5.0",
+    "eta": "^3.5.0"
+  },
+  "scripts": {
+    "dev": "bun run dev/server.ts"
   }
 }

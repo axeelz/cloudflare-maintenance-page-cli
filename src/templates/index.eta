@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= it.title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              mono: ["JetBrains Mono", "Monaco", "Consolas", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
+    </style>
+  </head>
+  <body class="font-mono bg-gray-50 min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full text-center">
+      <!-- Main Title -->
+      <div class="text-4xl font-medium text-gray-800 mb-2">Maintenance</div>
+
+      <!-- Subtitle -->
+      <h1 class="text-lg text-gray-600 mb-6"><%= it.title %></h1>
+
+      <!-- Message -->
+      <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6 text-left">
+        <p class="text-gray-600 leading-relaxed text-sm"><%= it.message %></p>
+      </div>
+
+      <!-- Time Estimate -->
+      <p class="text-gray-600 text-sm mb-8">
+        Expected completion:
+        <span class="font-medium text-gray-800">
+          <% if (it.expectedCompletionIso) { %>
+          <script>
+            const date = new Date("<%= it.expectedCompletionIso %>");
+            document.write(
+              date.toLocaleString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            );
+          </script>
+          <% } else { %> As soon as possible <% } %>
+        </span>
+      </p>
+
+      <!-- Contact -->
+      <div class="space-y-3">
+        <div class="text-xs text-gray-500 uppercase tracking-wide">Need help?</div>
+        <a
+          href="<%= it.statusPage %>"
+          target="_blank"
+          class="inline-block text-sm text-blue-600 hover:text-blue-800 underline">
+          Status Page
+        </a>
+        <br />
+        <a
+          href="mailto:<%= it.contactEmail %>"
+          class="inline-block text-sm text-blue-600 hover:text-blue-800 underline">
+          <%= it.contactEmail %>
+        </a>
+      </div>
+
+      <!-- Powered by -->
+      <div class="mt-12 pt-6 border-t border-gray-100">
+        <p class="text-xs text-gray-400 font-normal">
+          powered by
+          <a
+            href="#"
+            target="_blank"
+            class="text-gray-500 hover:text-gray-700 transition-colors duration-200 underline decoration-gray-300 hover:decoration-gray-500">
+            cf-maintenance-page
+          </a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
