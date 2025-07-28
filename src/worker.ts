@@ -2,11 +2,9 @@ import path from "node:path";
 import type { ScriptUpdateParams } from "cloudflare/resources/workers.mjs";
 import { toFile, type Uploadable } from "cloudflare/uploads.mjs";
 import { Eta } from "eta";
-import type { MaintenanceOptions } from "./types";
+import type { PageConfig } from "./config";
 
-export const generateMaintenanceHTML = (
-  options: MaintenanceOptions,
-): string => {
+export const generateMaintenanceHTML = (options: PageConfig): string => {
   const eta = new Eta({ views: path.join(__dirname, "templates") });
   return eta.render("index.eta", options);
 };
@@ -30,7 +28,7 @@ export const generateWorkerScript = (
 };
 
 export const createWorkerFile = async (
-  options: MaintenanceOptions,
+  options: PageConfig,
 ): Promise<{
   metadata: ScriptUpdateParams.Metadata;
   files: Record<string, Uploadable>;

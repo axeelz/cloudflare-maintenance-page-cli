@@ -1,0 +1,17 @@
+{
+  "CLOUDFLARE": {
+    "ACCOUNT_ID": null,
+    "API_TOKEN": null,
+    "ZONE_ID": null,
+    "SCRIPT_NAME": "maintenance-page-worker"
+  },
+  "PAGE": {
+    "STATUS_CODE": 503,
+    "TITLE": "We'll Be Right Back!",
+    "MESSAGE": "Our site is currently undergoing scheduled maintenance. We're working hard to bring you a better experience. Thank you for your patience and understanding.",
+    "EXPECTED_COMPLETION_ISO": null,
+    "RETRY_AFTER_SECONDS": 3600,
+    "CONTACT_EMAIL": "contact@example.com",
+    "STATUS_PAGE": "https://status.example.com"
+  }
+}

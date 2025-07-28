@@ -4,14 +4,15 @@ import { Command } from "@effect/cli";
 import { BunContext, BunRuntime } from "@effect/platform-bun";
 import { Console, Effect } from "effect";
 import { CloudflareService } from "./cloudflare.js";
-import { maintenanceConfig } from "./config.js";
+import { pageConfig } from "./config.js";
 
 const deployCommand = Command.make("deploy", {}, () =>
   Effect.gen(function* () {
     yield* Console.log("Creating Cloudflare Worker...");
 
     const service = yield* CloudflareService;
-    yield* service.setupScript(maintenanceConfig);
+    const config = yield* pageConfig;
+    yield* service.setupScript(config);
 
     yield* Console.log("Worker script deployed successfully");
   }),

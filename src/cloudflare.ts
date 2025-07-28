@@ -1,25 +1,9 @@
 import Cloudflare from "cloudflare";
-import { Config, Data, Effect, pipe, Redacted } from "effect";
-import type { MaintenanceOptions } from "./types.js";
+import { Data, Effect, pipe } from "effect";
+import { cloudflareConfig, type PageConfig } from "./config.js";
 import { createWorkerFile } from "./worker.js";
 
 class CloudflareError extends Data.Error<{ message: string }> {}
-
-const cloudflareConfig = Effect.all([
-  Config.string("CLOUDFLARE_ACCOUNT_ID"),
-  Config.redacted("CLOUDFLARE_API_TOKEN"),
-  Config.string("CLOUDFLARE_ZONE_ID"),
-  Config.string("WORKER_SCRIPT_NAME").pipe(
-    Config.withDefault("cloudflare-maintenance-worker"),
-  ),
-]).pipe(
-  Effect.map(([accountId, apiToken, zoneId, scriptName]) => ({
-    accountId,
-    apiToken: Redacted.value(apiToken),
-    zoneId,
-    scriptName,
-  })),
-);
 
 export class CloudflareService extends Effect.Service<CloudflareService>()(
   "app/CloudflareService",
@@ -37,7 +21,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
         },
         catch: (error) =>
           new CloudflareError({
-            message: `Failed to get zone domain: ${error}`,
+            message: `Failed to get zone domain\n${error}`,
           }),
       });
 
@@ -61,7 +45,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
           return routes;
         },
         catch: (error) =>
-          new CloudflareError({ message: `Failed to get routes: ${error}` }),
+          new CloudflareError({ message: `Failed to get routes\n${error}` }),
       });
 
       const getRouteWithPattern = (pattern: string) =>
@@ -92,7 +76,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
           },
           catch: (error) =>
             new CloudflareError({
-              message: `Failed to create route: ${error}`,
+              message: `Failed to create route\n${error}`,
             }),
         });
 
@@ -107,11 +91,11 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
           },
           catch: (error) =>
             new CloudflareError({
-              message: `Failed to update route: ${error}`,
+              message: `Failed to update route\n${error}`,
             }),
         });
 
-      const setupScript = (options: MaintenanceOptions) =>
+      const setupScript = (options: PageConfig) =>
         Effect.tryPromise({
           try: async () => {
             const { metadata, files } = await createWorkerFile(options);
@@ -124,7 +108,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
           },
           catch: (error) =>
             new CloudflareError({
-              message: `Failed to setup script: ${error}`,
+              message: `Failed to setup script\n${error}`,
             }),
         }).pipe(
           Effect.andThen(() =>
