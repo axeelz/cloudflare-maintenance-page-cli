@@ -32,7 +32,7 @@ export const pageConfig = Effect.all([
   Config.option(Config.string("EXPECTED_COMPLETION_ISO")),
   Config.number("RETRY_AFTER_SECONDS"),
   Config.string("CONTACT_EMAIL"),
-  Config.string("STATUS_PAGE"),
+  Config.option(Config.string("STATUS_PAGE")),
 ]).pipe(
   Effect.map(
     ([
@@ -50,7 +50,7 @@ export const pageConfig = Effect.all([
       expectedCompletionIso: Option.getOrUndefined(expectedCompletionIso),
       retryAfterSeconds,
       contactEmail,
-      statusPage,
+      statusPage: Option.getOrUndefined(statusPage),
     }),
   ),
   Effect.withConfigProvider(

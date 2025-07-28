@@ -40,7 +40,11 @@
         Expected completion:
         <span class="font-medium text-gray-800">
           <% if (it.expectedCompletionIso) { %>
-            <script>document.write(dateFns.formatDistanceToNow(new Date("<%= it.expectedCompletionIso %>"), { addSuffix: true }));</script>
+          <script>
+            document.write(
+              dateFns.formatDistanceToNow(new Date("<%= it.expectedCompletionIso %>"), { addSuffix: true })
+            );
+          </script>
           <% } else { %> as soon as possible <% } %>
         </span>
       </p>
@@ -48,6 +52,7 @@
       <!-- Contact -->
       <div class="space-y-3">
         <div class="text-xs text-gray-500 uppercase tracking-wide">Need help?</div>
+        <% if (it.statusPage) { %>
         <a
           href="<%= it.statusPage %>"
           target="_blank"
@@ -55,6 +60,7 @@
           Status Page
         </a>
         <br />
+        <% } %>
         <a
           href="mailto:<%= it.contactEmail %>"
           class="inline-block text-sm text-blue-600 hover:text-blue-800 underline">
@@ -75,7 +81,12 @@
             </a>
           </p>
           <p class="text-xs text-gray-300 font-normal">
-            updated <script>document.write(dateFns.formatDistanceToNow(new Date("<%= new Date().toISOString() %>"), { addSuffix: true }));</script>
+            updated
+            <script>
+              document.write(
+                dateFns.formatDistanceToNow(new Date("<%= new Date().toISOString() %>"), { addSuffix: true })
+              );
+            </script>
           </p>
         </div>
       </div>
