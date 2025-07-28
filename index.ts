@@ -1,8 +1,10 @@
+#!/usr/bin/env bun
+
 import { Command } from "@effect/cli";
 import { BunContext, BunRuntime } from "@effect/platform-bun";
 import { Console, Effect } from "effect";
-import { maintenanceConfig } from "../config.js";
-import { CloudflareService } from "./cloudflare.js";
+import { maintenanceConfig } from "./config.js";
+import { CloudflareService } from "./src/cloudflare.js";
 
 const deployCommand = Command.make("deploy", {}, () =>
   Effect.gen(function* () {
