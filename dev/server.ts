@@ -1,4 +1,4 @@
-import { maintenanceConfig } from "../config.js";
+import { maintenanceConfig } from "../src/config.js";
 import { generateMaintenanceHTML } from "../src/worker.js";
 
 const html = generateMaintenanceHTML(maintenanceConfig);
