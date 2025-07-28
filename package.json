@@ -1,5 +1,5 @@
 {
-  "name": "cf-maintenance-page",
+  "name": "cloudflare-maintenance-page-cli",
   "module": "src/index.ts",
   "type": "module",
   "private": true,

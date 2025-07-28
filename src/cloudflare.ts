@@ -10,7 +10,7 @@ const cloudflareConfig = Effect.all([
   Config.redacted("CLOUDFLARE_API_TOKEN"),
   Config.string("CLOUDFLARE_ZONE_ID"),
   Config.string("WORKER_SCRIPT_NAME").pipe(
-    Config.withDefault("cf-maintenance-worker"),
+    Config.withDefault("cloudflare-maintenance-worker"),
   ),
 ]).pipe(
   Effect.map(([accountId, apiToken, zoneId, scriptName]) => ({

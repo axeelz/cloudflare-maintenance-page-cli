@@ -1,4 +1,4 @@
-# cf-maintenance-page
+# cloudflare-maintenance-page-cli
 
 To install dependencies:
 

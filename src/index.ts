@@ -39,7 +39,7 @@ const disableCommand = Command.make("disable", {}, () =>
   }),
 );
 
-const mainCommand = Command.make("cf-maintenance").pipe(
+const mainCommand = Command.make("cloudflare-maintenance-page-cli").pipe(
   Command.withSubcommands([deployCommand, enableCommand, disableCommand]),
 );
 
