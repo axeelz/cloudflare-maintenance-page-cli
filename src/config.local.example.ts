@@ -8,4 +8,5 @@ export const localMaintenanceConfig: Partial<MaintenanceOptions> = {
   // message: "We are currently performing scheduled maintenance. Thank you for your patience.",
   // contactEmail: "your-email@example.com",
   // statusPage: "https://your-status-page.com",
+  // expectedCompletionIso: "2028-01-01T00:00:00.000Z",
 };

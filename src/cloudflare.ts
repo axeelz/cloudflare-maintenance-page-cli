@@ -127,11 +127,14 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
               message: `Failed to setup script: ${error}`,
             }),
         }).pipe(
-          Effect.andThen(
+          Effect.andThen(() =>
             pipe(
               getZoneDomain,
               Effect.andThen((zoneDomain) =>
-                createRoute(disabledPattern(zoneDomain)),
+                pipe(
+                  getRouteWithPattern(disabledPattern(zoneDomain)),
+                  Effect.orElse(() => createRoute(disabledPattern(zoneDomain))),
+                ),
               ),
             ),
           ),

@@ -5,7 +5,7 @@ const defaultConfig: MaintenanceOptions = {
   title: "We'll Be Right Back!",
   message:
     "Our site is currently undergoing scheduled maintenance. We're working hard to bring you a better experience. Thank you for your patience and understanding.",
-  expectedCompletionIso: new Date("2025-07-27T22:54:00.000Z").toISOString(),
+  expectedCompletionIso: undefined, // As soon as possible
   retryAfterSeconds: 1 * 60 * 60,
   contactEmail: "contact@example.com",
   statusPage: "https://status.example.com",
