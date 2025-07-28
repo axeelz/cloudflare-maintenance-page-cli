@@ -1,4 +1,4 @@
-import type { MaintenanceOptions } from "./src/types";
+import type { MaintenanceOptions } from "./types.ts";
 
 const defaultConfig: MaintenanceOptions = {
   statusCode: 503,
@@ -11,7 +11,9 @@ const defaultConfig: MaintenanceOptions = {
   statusPage: "https://status.example.com",
 };
 
-const localConfig: Partial<MaintenanceOptions> = await import("./config.local.ts")
+const localConfig: Partial<MaintenanceOptions> = await import(
+  "./config.local.ts"
+)
   .then(({ localMaintenanceConfig }) => localMaintenanceConfig ?? {})
   .catch(() => ({}));
 

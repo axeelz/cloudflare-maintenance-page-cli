@@ -1,4 +1,4 @@
-import type { MaintenanceOptions } from "./src/types";
+import type { MaintenanceOptions } from "./types";
 
 // Rename this file to config.local.ts to override the default configuration
 // Uncomment and modify the values you want to override

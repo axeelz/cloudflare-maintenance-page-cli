@@ -3,8 +3,8 @@
 import { Command } from "@effect/cli";
 import { BunContext, BunRuntime } from "@effect/platform-bun";
 import { Console, Effect } from "effect";
+import { CloudflareService } from "./cloudflare.js";
 import { maintenanceConfig } from "./config.js";
-import { CloudflareService } from "./src/cloudflare.js";
 
 const deployCommand = Command.make("deploy", {}, () =>
   Effect.gen(function* () {
@@ -14,7 +14,7 @@ const deployCommand = Command.make("deploy", {}, () =>
     yield* service.setupScript(maintenanceConfig);
 
     yield* Console.log("Worker script deployed successfully");
-  })
+  }),
 );
 
 const enableCommand = Command.make("enable", {}, () =>
@@ -25,7 +25,7 @@ const enableCommand = Command.make("enable", {}, () =>
     yield* service.enableMaintenance;
 
     yield* Console.log("Maintenance mode enabled");
-  })
+  }),
 );
 
 const disableCommand = Command.make("disable", {}, () =>
@@ -36,11 +36,11 @@ const disableCommand = Command.make("disable", {}, () =>
     yield* service.disableMaintenance;
 
     yield* Console.log("Maintenance mode disabled");
-  })
+  }),
 );
 
 const mainCommand = Command.make("cf-maintenance").pipe(
-  Command.withSubcommands([deployCommand, enableCommand, disableCommand])
+  Command.withSubcommands([deployCommand, enableCommand, disableCommand]),
 );
 
 const cli = Command.run(mainCommand, {
@@ -48,4 +48,8 @@ const cli = Command.run(mainCommand, {
   version: "v1.0.0",
 });
 
-cli(process.argv).pipe(Effect.provide(CloudflareService.Default), Effect.provide(BunContext.layer), BunRuntime.runMain);
+cli(process.argv).pipe(
+  Effect.provide(CloudflareService.Default),
+  Effect.provide(BunContext.layer),
+  BunRuntime.runMain,
+);

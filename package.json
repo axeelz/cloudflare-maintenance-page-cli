@@ -1,9 +1,10 @@
 {
   "name": "cf-maintenance-page",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
+    "@biomejs/biome": "2.1.2",
     "@types/bun": "latest"
   },
   "peerDependencies": {
@@ -17,9 +18,11 @@
   },
   "scripts": {
     "dev": "bun run dev/server.ts",
-    "start": "bun run index.ts"
+    "start": "bun run src/index.ts",
+    "lint": "biome check",
+    "lint:fix": "biome check --write"
   },
   "bin": {
-    "cfm": "./index.ts"
+    "cfm": "./src/index.ts"
   }
 }

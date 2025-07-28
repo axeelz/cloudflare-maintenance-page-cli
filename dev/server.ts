@@ -1,5 +1,5 @@
-import { generateMaintenanceHTML } from "../src/worker.js";
 import { maintenanceConfig } from "../config.js";
+import { generateMaintenanceHTML } from "../src/worker.js";
 
 const html = generateMaintenanceHTML(maintenanceConfig);
 
