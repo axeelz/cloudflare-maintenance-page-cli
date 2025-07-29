@@ -5,91 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title><%= it.title %></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              mono: ["JetBrains Mono", "Monaco", "Consolas", "monospace"],
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500&family=Geist+Mono:wght@100..900&display=swap"
+      rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: Be Vietnam Pro, ui-sans-serif, system-ui, sans-serif;
+        --font-mono: Geist Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+          monospace;
+      }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>
   </head>
-  <body class="font-mono bg-gray-50 min-h-screen flex items-center justify-center p-6">
+  <body class="font-mono bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center p-6">
     <div class="max-w-md w-full text-center">
       <!-- Main Title -->
-      <div class="text-4xl font-medium text-gray-800 mb-2">Maintenance</div>
+      <div class="font-sans text-4xl font-medium text-gray-800 dark:text-gray-200 mb-2">Maintenance</div>
 
       <!-- Subtitle -->
-      <h1 class="text-lg text-gray-600 mb-6"><%= it.title %></h1>
+      <h1 class="text-lg text-gray-600 dark:text-gray-400 mb-6"><%= it.title %></h1>
 
       <!-- Message -->
-      <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6 text-left">
-        <p class="text-gray-600 leading-relaxed text-sm"><%= it.message %></p>
+      <div
+        class="font-sans bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6 text-left">
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm"><%= it.message %></p>
       </div>
 
       <!-- Time Estimate -->
-      <p class="text-gray-600 text-sm mb-8">
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-8">
         Expected completion:
-        <span class="font-medium text-gray-800">
-          <% if (it.expectedCompletionIso) { %>
-          <script>
-            document.write(
-              dateFns.formatDistanceToNow(new Date("<%= it.expectedCompletionIso %>"), { addSuffix: true })
-            );
-          </script>
-          <% } else { %> as soon as possible <% } %>
+        <span class="font-medium text-gray-800 dark:text-gray-200">
+          <span id="expected-time"><%= it.expectedCompletionIso || '' %></span>
         </span>
       </p>
 
       <!-- Contact -->
-      <div class="space-y-3">
-        <div class="text-xs text-gray-500 uppercase tracking-wide">Need help?</div>
+      <div class="space-y-1">
+        <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Need help?</div>
         <% if (it.statusPage) { %>
         <a
           href="<%= it.statusPage %>"
           target="_blank"
-          class="inline-block text-sm text-blue-600 hover:text-blue-800 underline">
+          class="inline-block text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">
           Status Page
         </a>
         <br />
         <% } %>
         <a
           href="mailto:<%= it.contactEmail %>"
-          class="inline-block text-sm text-blue-600 hover:text-blue-800 underline">
+          class="inline-block text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">
           <%= it.contactEmail %>
         </a>
       </div>
 
       <!-- Powered by -->
-      <div class="mt-12 pt-6 border-t border-gray-100">
-        <div class="flex flex-col items-center space-y-1">
-          <p class="text-xs text-gray-400 font-normal">
+      <div class="mt-12 pt-6 border-t border-gray-100 dark:border-gray-800">
+        <div class="flex flex-col items-center space-y-2 text-xs text-gray-400 dark:text-gray-500 font-normal">
+          <p>
             powered by
             <a
               href="https://github.com/axeelz/cloudflare-maintenance-page-cli"
               target="_blank"
-              class="text-gray-500 hover:text-gray-700 transition-colors duration-200 underline decoration-gray-300 hover:decoration-gray-500">
+              class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 underline decoration-gray-300 dark:decoration-gray-600 hover:decoration-gray-500 dark:hover:decoration-gray-400">
               cloudflare-maintenance-page-cli
             </a>
           </p>
-          <p class="text-xs text-gray-300 font-normal">
-            updated
-            <script>
-              document.write(
-                dateFns.formatDistanceToNow(new Date("<%= new Date().toISOString() %>"), { addSuffix: true })
-              );
-            </script>
+          <p class="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2 py-1 rounded">
+            page updated <span id="last-updated"><%= new Date().toISOString() %></span>
           </p>
         </div>
       </div>
     </div>
+    <script>
+      const expectedTime = document.getElementById("expected-time");
+      const lastUpdated = document.getElementById("last-updated");
+
+      const completionDate = new Date(expectedTime.textContent);
+      expectedTime.textContent = isNaN(completionDate)
+        ? "as soon as possible"
+        : dateFns.formatDistanceToNow(completionDate, { addSuffix: true });
+
+      lastUpdated.textContent = dateFns.formatDistanceToNow(new Date(lastUpdated.textContent), { addSuffix: true });
+    </script>
   </body>
 </html>
