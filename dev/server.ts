@@ -6,9 +6,11 @@ const program = Effect.gen(function* () {
   const config = yield* pageConfig;
   const html = generateMaintenanceHTML(config);
 
-  yield* Console.log("Starting development server...");
-  yield* Console.log("Server available at: http://localhost:3000");
-  yield* Console.log("Press Ctrl+C to stop\n");
+  yield* Effect.all([
+    Console.log("Starting development server..."),
+    Console.log(`Server available at: http://localhost:3000`),
+    Console.log("Press Ctrl+C to stop\n"),
+  ]);
 
   Bun.serve({
     port: 3000,
