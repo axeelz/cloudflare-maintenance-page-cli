@@ -16,13 +16,13 @@ To link globally:
 bun link
 ```
 
-Then use `cfm` anywhere.
+Then use `cfmp` anywhere.
 
 ## commands
 
-- `cfm deploy` - deploys the maintenance page worker to Cloudflare at /maintenance on your domain
-- `cfm enable` - enables maintenance mode (routes all traffic to the worker)
-- `cfm disable` - disables maintenance mode (back to normal)
+- `cfmp deploy` - deploys the maintenance page worker to Cloudflare at /maintenance on your domain
+- `cfmp enable` - enables maintenance mode (routes all traffic to the worker)
+- `cfmp disable` - disables maintenance mode (back to normal)
 
 ## configuration
 
@@ -33,7 +33,7 @@ It will prompt for your Cloudflare credentials:
 - **Account ID** and **Zone ID**: [where to find them?](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/)
 - **API token**: [how to create one?](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) (needs Edit Workers permissions)
 
-To edit the config, just run `cfm config`.
+To edit the config, just run `cfmp config`.
 
 The config has two sections:
 

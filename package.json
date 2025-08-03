@@ -24,6 +24,6 @@
     "lint:fix": "biome check --write"
   },
   "bin": {
-    "cfm": "./src/index.ts"
+    "cfmp": "./src/index.ts"
   }
 }

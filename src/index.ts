@@ -10,7 +10,7 @@ import {
   enableCommand,
 } from "./commands/index.js";
 
-const mainCommand = Command.make("cfm").pipe(
+const mainCommand = Command.make("cfmp").pipe(
   Command.withSubcommands([
     configCommand,
     deployCommand,
