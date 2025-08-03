@@ -11,7 +11,7 @@ import {
   pipe,
   Redacted,
 } from "effect";
-import type { ConfigJSON } from "../types";
+import { type ConfigJSON, PROJECT_ROOT } from "../constants";
 import { prompt } from "./prompt";
 
 export const configPath = join(
@@ -29,9 +29,7 @@ const initConfig = Effect.gen(function* () {
       mkdir(dirname(configPath), { recursive: true }),
     );
 
-    const exampleConfig = Bun.file(
-      join(dirname(import.meta.dirname), "config.example.json"),
-    );
+    const exampleConfig = Bun.file(join(PROJECT_ROOT, "config.example.json"));
     yield* Effect.promise(() =>
       Bun.write(configPath, exampleConfig, { mode: 0o600 }),
     );
@@ -62,7 +60,9 @@ const loadCloudflareConfig = Effect.all([
 
 export const getCloudflareConfig = Effect.gen(function* () {
   const configJSON = yield* loadConfigJSON;
-  const configProvider = ConfigProvider.fromJson(configJSON).pipe(
+  const configProvider = pipe(
+    ConfigProvider.fromEnv(),
+    ConfigProvider.orElse(() => ConfigProvider.fromJson(configJSON)),
     ConfigProvider.nested("CLOUDFLARE"),
   );
 

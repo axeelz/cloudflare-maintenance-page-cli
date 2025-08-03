@@ -26,14 +26,14 @@ Then use `cfmp` anywhere.
 
 ## configuration
 
-First run will create `~/.config/cloudflare-maintenance-page-cli/config.json`.
-
-It will prompt for your Cloudflare credentials:
+At the first run, it will create `~/.config/cloudflare-maintenance-page-cli/config.json`, then prompt for your Cloudflare credentials:
 
 - **Account ID** and **Zone ID**: [where to find them?](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/)
 - **API token**: [how to create one?](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) (needs Edit Workers permissions)
 
 To edit the config, just run `cfmp config`.
+
+> You can also use environment variables (example `CLOUDFLARE_API_TOKEN=your_token... cfmp deploy`).
 
 The config has two sections:
 

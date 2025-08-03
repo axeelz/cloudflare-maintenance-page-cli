@@ -1,11 +1,12 @@
-import path from "node:path";
+import { join } from "node:path";
 import type { ScriptUpdateParams } from "cloudflare/resources/workers.mjs";
 import { toFile, type Uploadable } from "cloudflare/uploads.mjs";
 import { Eta } from "eta";
+import { PROJECT_ROOT } from "../constants";
 import type { PageConfig } from "./config";
 
 export const generateMaintenanceHTML = (options: PageConfig): string => {
-  const eta = new Eta({ views: path.join(__dirname, "templates") });
+  const eta = new Eta({ views: join(PROJECT_ROOT, "src", "templates") });
   return eta.render("index.eta", options);
 };
 
