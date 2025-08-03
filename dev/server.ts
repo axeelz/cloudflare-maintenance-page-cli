@@ -1,6 +1,6 @@
 import { Console, Effect } from "effect";
-import { getPageConfig } from "../src/config.js";
-import { generateMaintenanceHTML } from "../src/worker.js";
+import { getPageConfig } from "../src/services/config.js";
+import { generateMaintenanceHTML } from "../src/services/worker.js";
 
 const program = Effect.gen(function* () {
   const config = yield* getPageConfig;

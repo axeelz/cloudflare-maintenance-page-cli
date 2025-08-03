@@ -1,7 +1,7 @@
 import { Command } from "@effect/cli";
 import { Console, Effect } from "effect";
 import open from "open";
-import { configPath, loadConfigJSON } from "../config.js";
+import { configPath, loadConfigJSON } from "../services/config.js";
 
 export const configCommand = Command.make("config", {}, () =>
   Effect.all([

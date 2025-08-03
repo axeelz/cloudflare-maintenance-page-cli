@@ -11,8 +11,8 @@ import {
   pipe,
   Redacted,
 } from "effect";
+import type { ConfigJSON } from "../types";
 import { prompt } from "./prompt";
-import type { ConfigJSON } from "./types";
 
 export const configPath = join(
   homedir(),

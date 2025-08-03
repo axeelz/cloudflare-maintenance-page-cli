@@ -1,7 +1,7 @@
 import { Command } from "@effect/cli";
 import { Console, Effect } from "effect";
-import { CloudflareService } from "../cloudflare.js";
-import { getPageConfig } from "../config.js";
+import { CloudflareService } from "../services/cloudflare.js";
+import { getPageConfig } from "../services/config.js";
 
 export const deployCommand = Command.make("deploy", {}, () =>
   Effect.gen(function* () {

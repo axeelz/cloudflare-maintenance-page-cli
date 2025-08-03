@@ -1,6 +1,6 @@
 import { Command } from "@effect/cli";
 import { Console, Effect } from "effect";
-import { CloudflareService } from "../cloudflare.js";
+import { CloudflareService } from "../services/cloudflare.js";
 
 export const disableCommand = Command.make("disable", {}, () =>
   Effect.gen(function* () {
