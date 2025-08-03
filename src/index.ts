@@ -2,55 +2,26 @@
 
 import { Command } from "@effect/cli";
 import { BunContext, BunRuntime } from "@effect/platform-bun";
-import { Console, Effect } from "effect";
-import { CloudflareService } from "./cloudflare.js";
-import { pageConfig } from "./config.js";
+import { Effect } from "effect";
+import {
+  configCommand,
+  deployCommand,
+  disableCommand,
+  enableCommand,
+} from "./commands/index.js";
 
-const deployCommand = Command.make("deploy", {}, () =>
-  Effect.gen(function* () {
-    yield* Console.log("Creating Cloudflare Worker...");
-
-    const service = yield* CloudflareService;
-    const config = yield* pageConfig;
-    yield* service.setupScript(config);
-
-    yield* Console.log("Worker script deployed successfully");
-  }),
-);
-
-const enableCommand = Command.make("enable", {}, () =>
-  Effect.gen(function* () {
-    yield* Console.log("Enabling maintenance mode...");
-
-    const service = yield* CloudflareService;
-    yield* service.enableMaintenance;
-
-    yield* Console.log("Maintenance mode enabled");
-  }),
-);
-
-const disableCommand = Command.make("disable", {}, () =>
-  Effect.gen(function* () {
-    yield* Console.log("Disabling maintenance mode...");
-
-    const service = yield* CloudflareService;
-    yield* service.disableMaintenance;
-
-    yield* Console.log("Maintenance mode disabled");
-  }),
-);
-
-const mainCommand = Command.make("cloudflare-maintenance-page-cli").pipe(
-  Command.withSubcommands([deployCommand, enableCommand, disableCommand]),
+const mainCommand = Command.make("cfm").pipe(
+  Command.withSubcommands([
+    configCommand,
+    deployCommand,
+    disableCommand,
+    enableCommand,
+  ]),
 );
 
 const cli = Command.run(mainCommand, {
-  name: "Cloudflare Maintenance Page Helper CLI",
+  name: "Cloudflare Maintenance Page CLI",
   version: "v1.0.0",
 });
 
-cli(process.argv).pipe(
-  Effect.provide(CloudflareService.Default),
-  Effect.provide(BunContext.layer),
-  BunRuntime.runMain,
-);
+cli(process.argv).pipe(Effect.provide(BunContext.layer), BunRuntime.runMain);
