@@ -24,10 +24,11 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
             message: `Failed to get zone domain\n${error}`,
           }),
       });
-
-      const enabledPattern = (zoneDomain: string) => `*.${zoneDomain}/*`;
-      const disabledPattern = (zoneDomain: string) =>
-        `*.${zoneDomain}/maintenance`;
+      const zoneDomain = yield* getZoneDomain;
+      const patterns = {
+        enabled: `*.${zoneDomain}/*`,
+        disabled: `*.${zoneDomain}/maintenance`,
+      } as const;
 
       const getRoutes = Effect.tryPromise({
         try: async () => {
@@ -48,22 +49,22 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
           new CloudflareError({ message: `Failed to get routes\n${error}` }),
       });
 
-      const getRouteWithPattern = (pattern: string) =>
-        pipe(
-          getRoutes,
-          Effect.map((routes) =>
-            routes.find((route) => route.pattern === pattern),
-          ),
-          Effect.flatMap((route) =>
-            route
-              ? Effect.succeed(route)
-              : Effect.fail(
-                  new CloudflareError({
-                    message: `No route found with pattern: ${pattern}`,
-                  }),
-                ),
-          ),
-        );
+      const findRouteByPattern = (
+        routes: Array<{ id: string; pattern: string }>,
+        pattern: string,
+      ) => routes.find((route) => route.pattern === pattern);
+
+      const requireRoute = (
+        route: { id: string; pattern: string } | undefined,
+      ) =>
+        route
+          ? Effect.succeed(route)
+          : Effect.fail(
+              new CloudflareError({
+                message:
+                  "No matching route found. Run 'deploy' first to create the maintenance route.",
+              }),
+            );
 
       const createRoute = (newPattern: string) =>
         Effect.tryPromise({
@@ -113,33 +114,40 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
         }).pipe(
           Effect.andThen(() =>
             pipe(
-              getZoneDomain,
-              Effect.andThen((zoneDomain) =>
-                pipe(
-                  getRouteWithPattern(disabledPattern(zoneDomain)),
-                  Effect.orElse(() => createRoute(disabledPattern(zoneDomain))),
-                ),
+              getRoutes,
+              Effect.flatMap((routes) =>
+                findRouteByPattern(routes, patterns.disabled)
+                  ? Effect.succeed(undefined)
+                  : createRoute(patterns.disabled),
               ),
             ),
           ),
         );
 
       const enableMaintenance = Effect.gen(function* () {
-        const zoneDomain = yield* getZoneDomain;
-        const route = yield* getRoutes.pipe(
-          Effect.flatMap(() =>
-            getRouteWithPattern(disabledPattern(zoneDomain)),
-          ),
+        const routes = yield* getRoutes;
+        const alreadyEnabled = findRouteByPattern(routes, patterns.enabled);
+        if (alreadyEnabled) {
+          return false;
+        }
+        const disabledRoute = yield* requireRoute(
+          findRouteByPattern(routes, patterns.disabled),
         );
-        yield* updateRoute(route.id, enabledPattern(zoneDomain));
+        yield* updateRoute(disabledRoute.id, patterns.enabled);
+        return true;
       });
 
       const disableMaintenance = Effect.gen(function* () {
-        const zoneDomain = yield* getZoneDomain;
-        const route = yield* getRoutes.pipe(
-          Effect.flatMap(() => getRouteWithPattern(enabledPattern(zoneDomain))),
+        const routes = yield* getRoutes;
+        const alreadyDisabled = findRouteByPattern(routes, patterns.disabled);
+        if (alreadyDisabled) {
+          return false;
+        }
+        const enabledRoute = yield* requireRoute(
+          findRouteByPattern(routes, patterns.enabled),
         );
-        yield* updateRoute(route.id, disabledPattern(zoneDomain));
+        yield* updateRoute(enabledRoute.id, patterns.disabled);
+        return true;
       });
 
       return {

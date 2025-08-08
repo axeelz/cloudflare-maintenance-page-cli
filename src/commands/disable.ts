@@ -7,8 +7,11 @@ export const disableCommand = Command.make("disable", {}, () =>
     yield* Console.log("Disabling maintenance mode...");
 
     const service = yield* CloudflareService;
-    yield* service.disableMaintenance;
-
-    yield* Console.log("Maintenance mode disabled");
+    const changed = yield* service.disableMaintenance;
+    yield* Console.log(
+      changed
+        ? "Maintenance mode disabled"
+        : "Maintenance mode was already disabled",
+    );
   }).pipe(Effect.provide(CloudflareService.Default)),
 );
