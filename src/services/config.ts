@@ -115,6 +115,7 @@ export const getPageConfig = Effect.gen(function* () {
     Config.number("RETRY_AFTER_SECONDS"),
     Config.string("CONTACT_EMAIL"),
     Config.option(Config.string("STATUS_PAGE")),
+    Config.option(Config.string("BYPASS_VALUE")),
   ]).pipe(
     Effect.map(
       ([
@@ -125,6 +126,7 @@ export const getPageConfig = Effect.gen(function* () {
         retryAfterSeconds,
         contactEmail,
         statusPage,
+        bypassValue,
       ]) => ({
         statusCode,
         title,
@@ -133,6 +135,7 @@ export const getPageConfig = Effect.gen(function* () {
         retryAfterSeconds,
         contactEmail,
         statusPage: Option.getOrUndefined(statusPage),
+        bypassValue: Option.getOrUndefined(bypassValue),
       }),
     ),
     Effect.withConfigProvider(

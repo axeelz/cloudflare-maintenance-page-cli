@@ -14,9 +14,17 @@ export const generateWorkerScript = (
   html: string,
   statusCode: number,
   retryAfterSeconds: number,
+  bypassValue?: string,
 ): string => {
+  const bypassCheck = bypassValue
+    ? `if (url.searchParams.get("bypass") === "${bypassValue}") { return fetch(request); }`
+    : "";
+
   return `export default {
   async fetch(request) {
+    const url = new URL(request.url);
+    ${bypassCheck}
+
     return new Response(\`${html}\`, {
       status: ${statusCode},
       headers: {
@@ -39,6 +47,7 @@ export const createWorkerFile = async (
     html,
     options.statusCode,
     options.retryAfterSeconds,
+    options.bypassValue,
   );
 
   return {

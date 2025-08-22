@@ -11,6 +11,8 @@ export const deployCommand = Command.make("deploy", {}, () =>
     const config = yield* getPageConfig;
     yield* service.setupScript(config);
 
-    yield* Console.log("Worker script deployed successfully");
+    yield* Console.log(
+      `Worker script deployed successfully for ${service.patterns.disabled}`,
+    );
   }).pipe(Effect.provide(CloudflareService.Default)),
 );

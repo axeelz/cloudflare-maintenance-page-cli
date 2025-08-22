@@ -26,8 +26,8 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
       });
       const zoneDomain = yield* getZoneDomain;
       const patterns = {
-        enabled: `*.${zoneDomain}/*`,
-        disabled: `*.${zoneDomain}/maintenance`,
+        enabled: `*${zoneDomain}/*`,
+        disabled: `*${zoneDomain}/maintenance*`,
       } as const;
 
       const getRoutes = Effect.tryPromise({
@@ -154,6 +154,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
         setupScript,
         enableMaintenance,
         disableMaintenance,
+        patterns,
       } as const;
     }),
   },

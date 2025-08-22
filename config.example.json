@@ -12,6 +12,7 @@
     "EXPECTED_COMPLETION_ISO": null,
     "RETRY_AFTER_SECONDS": 3600,
     "CONTACT_EMAIL": "contact@example.com",
-    "STATUS_PAGE": "https://status.example.com"
+    "STATUS_PAGE": "https://status.example.com",
+    "BYPASS_VALUE": null
   }
 }
