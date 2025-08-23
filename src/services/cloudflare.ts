@@ -116,9 +116,9 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
             pipe(
               getRoutes,
               Effect.flatMap((routes) =>
-                findRouteByPattern(routes, patterns.disabled)
-                  ? Effect.succeed(undefined)
-                  : createRoute(patterns.disabled),
+                routes.length === 0
+                  ? createRoute(patterns.disabled)
+                  : Effect.succeed(undefined),
               ),
             ),
           ),
