@@ -26,18 +26,22 @@ Then use `cfmp` anywhere.
 
 ## configuration
 
-At the first run, it will create `~/.config/cloudflare-maintenance-page-cli/config.json`, then prompt for your Cloudflare credentials:
+At the first run, it will create `~/.config/cloudflare-maintenance-page-cli/config.json`, then prompt for your Cloudflare information:
 
 - **Account ID** and **Zone ID**: [where to find them?](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/)
 - **API token**: [how to create one?](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) (needs Edit Workers permissions)
 
 To edit the config, just run `cfmp config`.
 
-> You can also use environment variables (example `CLOUDFLARE_API_TOKEN=your_token... cfmp deploy`).
+> Your API token is NOT stored in plain text in the config file. It is stored securely using the operating system's keychain. To delete it, you can run `cfmp config --delete`.
 
 The config has two sections:
 
-- `CLOUDFLARE` - your Cloudflare credentials and worker name
+- `CLOUDFLARE` - your Cloudflare details and worker name
 - `PAGE` - customize the maintenance page
+
+> You can also use environment variables (example `CLOUDFLARE_ACCOUNT_ID=your_id... cfmp deploy`). This doesn't apply to the token.
+
+---
 
 This project was created using `bun init` in bun v1.2.19. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.

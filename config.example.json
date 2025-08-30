@@ -1,7 +1,6 @@
 {
   "CLOUDFLARE": {
     "ACCOUNT_ID": null,
-    "API_TOKEN": null,
     "ZONE_ID": null,
     "SCRIPT_NAME": "maintenance-page-worker"
   },

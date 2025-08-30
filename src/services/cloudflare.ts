@@ -1,6 +1,10 @@
 import Cloudflare from "cloudflare";
 import { Data, Effect, pipe } from "effect";
-import { getCloudflareConfig, type PageConfig } from "./config.js";
+import {
+  getCloudflareConfig,
+  getCloudflareToken,
+  type PageConfig,
+} from "./config.js";
 import { createWorkerFile } from "./worker.js";
 
 class CloudflareError extends Data.Error<{ message: string }> {}
@@ -10,7 +14,8 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
   {
     effect: Effect.gen(function* () {
       const config = yield* getCloudflareConfig;
-      const client = new Cloudflare({ apiToken: config.apiToken });
+      const apiToken = yield* getCloudflareToken;
+      const client = new Cloudflare({ apiToken });
 
       const getZoneDomain = Effect.tryPromise({
         try: async () => {

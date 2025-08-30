@@ -1,7 +1,7 @@
 import { Prompt } from "@effect/cli";
 import { Effect } from "effect";
 
-const tokenPrompt = Prompt.password({
+export const tokenPrompt = Prompt.password({
   message:
     "Enter your Cloudflare API Token (with Edit Cloudflare Workers template)",
   validate: (value) =>
@@ -26,16 +26,7 @@ const zoneIdPrompt = Prompt.text({
       : Effect.succeed(value),
 });
 
-const shouldStorePrompt = Prompt.toggle({
-  message: "Store credentials locally for later use?",
-  active: "yes",
-  inactive: "no",
-  initial: true,
-});
-
-export const prompt = Prompt.all({
-  apiToken: tokenPrompt,
+export const cloudflareConfigPrompt = Prompt.all({
   accountId: accountIdPrompt,
   zoneId: zoneIdPrompt,
-  shouldStore: shouldStorePrompt,
 });

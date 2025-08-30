@@ -19,3 +19,6 @@ export type ConfigJSON = {
 };
 
 export const PROJECT_ROOT = dirname(import.meta.dirname);
+
+export const CLI_NAME = "cloudflare-maintenance-page-cli";
+export const SECRETS_NAME = "cloudflare-token";

@@ -1,7 +1,8 @@
 import { mkdir } from "node:fs/promises";
-import { homedir } from "node:os";
+import { homedir, type } from "node:os";
 import { dirname, join } from "node:path";
 import { Prompt } from "@effect/cli";
+import { secrets } from "bun";
 import {
   Config,
   ConfigProvider,
@@ -11,15 +12,15 @@ import {
   pipe,
   Redacted,
 } from "effect";
-import { type ConfigJSON, PROJECT_ROOT } from "../constants";
-import { prompt } from "./prompt";
+import {
+  CLI_NAME,
+  type ConfigJSON,
+  PROJECT_ROOT,
+  SECRETS_NAME,
+} from "../constants";
+import { cloudflareConfigPrompt, tokenPrompt } from "./prompt";
 
-export const configPath = join(
-  homedir(),
-  ".config",
-  "cloudflare-maintenance-page-cli",
-  "config.json",
-);
+export const configPath = join(homedir(), ".config", CLI_NAME, "config.json");
 
 const initConfig = Effect.gen(function* () {
   const exists = yield* Effect.promise(() => Bun.file(configPath).exists());
@@ -46,13 +47,11 @@ export const loadConfigJSON = pipe(
 
 const loadCloudflareConfig = Effect.all([
   Config.string("ACCOUNT_ID"),
-  Config.redacted("API_TOKEN"),
   Config.string("ZONE_ID"),
   Config.string("SCRIPT_NAME"),
 ]).pipe(
-  Effect.map(([accountId, apiToken, zoneId, scriptName]) => ({
+  Effect.map(([accountId, zoneId, scriptName]) => ({
     accountId,
-    apiToken: Redacted.value(apiToken),
     zoneId,
     scriptName,
   })),
@@ -69,7 +68,7 @@ export const getCloudflareConfig = Effect.gen(function* () {
   const config = yield* loadCloudflareConfig.pipe(
     Effect.withConfigProvider(configProvider),
     Effect.catchTag("ConfigError", () =>
-      Prompt.run(prompt).pipe(
+      Prompt.run(cloudflareConfigPrompt).pipe(
         Effect.flatMap((answers) =>
           Effect.gen(function* () {
             const newConfig = {
@@ -77,16 +76,13 @@ export const getCloudflareConfig = Effect.gen(function* () {
               CLOUDFLARE: {
                 ...configJSON.CLOUDFLARE,
                 ACCOUNT_ID: answers.accountId,
-                API_TOKEN: Redacted.value(answers.apiToken),
                 ZONE_ID: answers.zoneId,
               },
             } satisfies ConfigJSON;
 
-            if (answers.shouldStore) {
-              yield* Effect.promise(() =>
-                Bun.write(configPath, JSON.stringify(newConfig, null, 2)),
-              );
-            }
+            yield* Effect.promise(() =>
+              Bun.write(configPath, JSON.stringify(newConfig, null, 2)),
+            );
 
             return yield* loadCloudflareConfig.pipe(
               Effect.withConfigProvider(
@@ -102,6 +98,52 @@ export const getCloudflareConfig = Effect.gen(function* () {
   );
 
   return config;
+});
+
+const keychain = {
+  Darwin: "Keychain Services",
+  Linux: "libsecret",
+  Windows_NT: "Windows Credential Manager",
+}[type()];
+
+export const getCloudflareToken = Effect.gen(function* () {
+  const token = yield* Effect.tryPromise(() =>
+    secrets.get({
+      service: CLI_NAME,
+      name: SECRETS_NAME,
+    }),
+  );
+
+  if (!token) {
+    const newToken = yield* Prompt.run(tokenPrompt);
+    yield* Effect.tryPromise(() =>
+      secrets.set({
+        service: CLI_NAME,
+        name: SECRETS_NAME,
+        value: Redacted.value(newToken),
+      }),
+    ).pipe(
+      Effect.tap(() => Console.log(`Token securely stored in ${keychain}`)),
+    );
+    return Redacted.value(newToken);
+  }
+
+  return token;
+});
+
+export const deleteCloudflareToken = Effect.gen(function* () {
+  const deleted = yield* Effect.tryPromise(() =>
+    secrets.delete({
+      service: CLI_NAME,
+      name: SECRETS_NAME,
+    }),
+  );
+
+  yield* Console.log(
+    deleted
+      ? `Token deleted from ${keychain}`
+      : `Couldn't delete API token from ${keychain}, either it doesn't exist or you may need to delete it manually.`,
+  );
 });
 
 export const getPageConfig = Effect.gen(function* () {
