@@ -1,6 +1,6 @@
 {
   "name": "cloudflare-maintenance-page-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple CLI using Cloudflare API and Workers to deploy a maintenance page to a domain",
   "keywords": [
     "cloudflare",
