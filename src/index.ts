@@ -3,6 +3,7 @@
 import { Command } from "@effect/cli";
 import { BunContext, BunRuntime } from "@effect/platform-bun";
 import { Effect } from "effect";
+import packageJson from "../package.json";
 import {
   configCommand,
   deployCommand,
@@ -21,7 +22,7 @@ const mainCommand = Command.make("cfmp").pipe(
 
 const cli = Command.run(mainCommand, {
   name: "Cloudflare Maintenance Page CLI",
-  version: "v0.1.1",
+  version: `v${packageJson.version}`,
 });
 
 cli(process.argv).pipe(Effect.provide(BunContext.layer), BunRuntime.runMain);
