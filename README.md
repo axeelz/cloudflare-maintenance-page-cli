@@ -2,6 +2,8 @@
 
 Simple CLI using Cloudflare API and Workers to deploy a maintenance page to a domain
 
+[![npm version](https://img.shields.io/npm/v/cloudflare-maintenance-page-cli.svg)](https://www.npmjs.com/package/cloudflare-maintenance-page-cli)
+
 ![screenshot](https://github.com/user-attachments/assets/3121c725-2ca6-49f3-8498-62296a82b84c)
 
 ## setup
