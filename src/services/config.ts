@@ -14,7 +14,8 @@ import {
 } from "effect";
 import exampleConfigPath from "../../config.example.json" with { type: "file" };
 import { CLI_NAME, type ConfigJSON, SECRETS_NAME } from "../constants";
-import { cloudflareConfigPrompt, tokenPrompt } from "./prompt";
+import { selectAccountAndZone } from "./cloudflare";
+import { tokenPrompt } from "./prompt";
 
 export const configPath = join(homedir(), ".config", CLI_NAME, "config.json");
 
@@ -44,12 +45,10 @@ export const loadConfigJSON = pipe(
 const loadCloudflareConfig = Effect.all([
   Config.string("ACCOUNT_ID"),
   Config.string("ZONE_ID"),
-  Config.string("SCRIPT_NAME"),
 ]).pipe(
-  Effect.map(([accountId, zoneId, scriptName]) => ({
+  Effect.map(([accountId, zoneId]) => ({
     accountId,
     zoneId,
-    scriptName,
   })),
 );
 
@@ -64,32 +63,29 @@ export const getCloudflareConfig = Effect.gen(function* () {
   const config = yield* loadCloudflareConfig.pipe(
     Effect.withConfigProvider(configProvider),
     Effect.catchTag("ConfigError", () =>
-      Prompt.run(cloudflareConfigPrompt).pipe(
-        Effect.flatMap((answers) =>
-          Effect.gen(function* () {
-            const newConfig = {
-              ...configJSON,
-              CLOUDFLARE: {
-                ...configJSON.CLOUDFLARE,
-                ACCOUNT_ID: answers.accountId,
-                ZONE_ID: answers.zoneId,
-              },
-            } satisfies ConfigJSON;
+      Effect.gen(function* () {
+        const { accountId, zoneId } = yield* selectAccountAndZone;
 
-            yield* Effect.promise(() =>
-              Bun.write(configPath, JSON.stringify(newConfig, null, 2)),
-            );
+        const newConfig = {
+          ...configJSON,
+          CLOUDFLARE: {
+            ACCOUNT_ID: accountId,
+            ZONE_ID: zoneId,
+          },
+        } satisfies ConfigJSON;
 
-            return yield* loadCloudflareConfig.pipe(
-              Effect.withConfigProvider(
-                ConfigProvider.fromJson(newConfig).pipe(
-                  ConfigProvider.nested("CLOUDFLARE"),
-                ),
-              ),
-            );
-          }),
-        ),
-      ),
+        yield* Effect.promise(() =>
+          Bun.write(configPath, JSON.stringify(newConfig, null, 2)),
+        );
+
+        return yield* loadCloudflareConfig.pipe(
+          Effect.withConfigProvider(
+            ConfigProvider.fromJson(newConfig).pipe(
+              ConfigProvider.nested("CLOUDFLARE"),
+            ),
+          ),
+        );
+      }),
     ),
   );
 

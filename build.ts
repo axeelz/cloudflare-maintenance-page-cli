@@ -1,7 +1,8 @@
-import { rm } from "node:fs/promises";
+import { mkdir, rm } from "node:fs/promises";
 import type { CompileBuildOptions } from "bun";
 
-await rm("./dist", { recursive: true });
+await rm("./dist", { recursive: true }).catch(() => {});
+await mkdir("./dist", { recursive: true });
 
 const platforms: CompileBuildOptions[] = [
   { target: "bun-windows-x64", outfile: "cfmp-windows-x64" },

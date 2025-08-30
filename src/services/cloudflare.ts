@@ -1,3 +1,4 @@
+import { Prompt } from "@effect/cli";
 import Cloudflare from "cloudflare";
 import { Data, Effect, pipe } from "effect";
 import {
@@ -5,17 +6,26 @@ import {
   getCloudflareToken,
   type PageConfig,
 } from "./config.js";
+import {
+  makeAccountSelectPrompt,
+  makeZoneSelectPrompt,
+  type SelectChoice,
+} from "./prompt.js";
 import { createWorkerFile } from "./worker.js";
 
 class CloudflareError extends Data.Error<{ message: string }> {}
+
+const createCloudflareClient = Effect.gen(function* () {
+  const apiToken = yield* getCloudflareToken;
+  return new Cloudflare({ apiToken });
+});
 
 export class CloudflareService extends Effect.Service<CloudflareService>()(
   "app/CloudflareService",
   {
     effect: Effect.gen(function* () {
       const config = yield* getCloudflareConfig;
-      const apiToken = yield* getCloudflareToken;
-      const client = new Cloudflare({ apiToken });
+      const client = yield* createCloudflareClient;
 
       const getZoneDomain = Effect.tryPromise({
         try: async () => {
@@ -34,6 +44,8 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
         enabled: `*${zoneDomain}/*`,
         disabled: `*${zoneDomain}/maintenance*`,
       } as const;
+
+      const scriptName = `maintenance-${zoneDomain.replace(/\./g, "-")}-${config.zoneId.slice(0, 8)}`;
 
       const getRoutes = Effect.tryPromise({
         try: async () => {
@@ -77,7 +89,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
             await client.workers.routes.create({
               zone_id: config.zoneId,
               pattern: newPattern,
-              script: config.scriptName,
+              script: scriptName,
             });
           },
           catch: (error) =>
@@ -92,7 +104,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
             await client.workers.routes.update(routeId, {
               zone_id: config.zoneId,
               pattern: newPattern,
-              script: config.scriptName,
+              script: scriptName,
             });
           },
           catch: (error) =>
@@ -106,7 +118,7 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
           try: async () => {
             const { metadata, files } = await createWorkerFile(options);
 
-            await client.workers.scripts.update(config.scriptName, {
+            await client.workers.scripts.update(scriptName, {
               account_id: config.accountId,
               metadata,
               files,
@@ -164,3 +176,71 @@ export class CloudflareService extends Effect.Service<CloudflareService>()(
     }),
   },
 ) {}
+
+export const selectAccountAndZone = Effect.gen(function* () {
+  const client = yield* createCloudflareClient;
+
+  const accounts = yield* Effect.tryPromise({
+    try: async () => {
+      const list: Array<{ id: string; name: string }> = [];
+      for await (const account of client.accounts.list()) {
+        list.push({ id: account.id, name: account.name });
+      }
+      return list;
+    },
+    catch: (error) =>
+      new CloudflareError({
+        message: `Failed to fetch Cloudflare accounts: ${error}`,
+      }),
+  });
+
+  if (accounts.length === 0) {
+    return yield* Effect.fail(
+      new CloudflareError({
+        message: "No Cloudflare accounts available for this token",
+      }),
+    );
+  }
+
+  const accountChoices: Array<SelectChoice> = accounts.map((a) => ({
+    title: a.name,
+    value: a.id,
+  }));
+  const selectedAccountId = yield* Prompt.run(
+    makeAccountSelectPrompt(accountChoices),
+  );
+
+  const zones = yield* Effect.tryPromise({
+    try: async () => {
+      const list: Array<{ id: string; name: string }> = [];
+      for await (const zone of client.zones.list({
+        account: { id: selectedAccountId },
+        per_page: 50,
+      })) {
+        list.push({ id: zone.id, name: zone.name });
+      }
+      return list;
+    },
+    catch: (error) =>
+      new CloudflareError({
+        message: `Failed to fetch zones for account ${selectedAccountId}: ${error}`,
+      }),
+  });
+
+  if (zones.length === 0) {
+    return yield* Effect.fail(
+      new CloudflareError({
+        message:
+          "No zones found for the selected account. Add a zone in Cloudflare first.",
+      }),
+    );
+  }
+
+  const zoneChoices: Array<SelectChoice> = zones.map((z) => ({
+    title: z.name,
+    value: z.id,
+  }));
+  const selectedZoneId = yield* Prompt.run(makeZoneSelectPrompt(zoneChoices));
+
+  return { accountId: selectedAccountId, zoneId: selectedZoneId };
+});

@@ -28,7 +28,7 @@ Then use `cfmp` anywhere.
 
 At the first run, it will create `~/.config/cloudflare-maintenance-page-cli/config.json`, then prompt for your Cloudflare information:
 
-- **Account ID** and **Zone ID**: [where to find them?](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/)
+- **Account** and **Zone**: [what is this?](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/)
 - **API token**: [how to create one?](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) (needs Edit Workers permissions)
 
 To edit the config, just run `cfmp config`.
@@ -37,10 +37,16 @@ To edit the config, just run `cfmp config`.
 
 The config has two sections:
 
-- `CLOUDFLARE` - your Cloudflare details and worker name
+- `CLOUDFLARE` - your Cloudflare information
 - `PAGE` - customize the maintenance page
 
 > You can also use environment variables (example `CLOUDFLARE_ACCOUNT_ID=your_id... cfmp deploy`). This doesn't apply to the token.
+
+## worker
+
+The CLI will deploy a Cloudflare Worker on your Cloudflare account named `maintenance-<domain>-<start_of_zone_id>`.
+
+Cloudflare Workers limits apply according to your plan. See [Cloudflare Workers limits](https://developers.cloudflare.com/workers/platform/limits/#worker-limits).
 
 ---
 

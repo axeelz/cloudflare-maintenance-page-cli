@@ -10,8 +10,8 @@ export const enableCommand = Command.make("enable", {}, () =>
     const changed = yield* service.enableMaintenance;
     yield* Console.log(
       changed
-        ? `Maintenance mode enabled, pattern is ${service.patterns.enabled}`
-        : `Maintenance mode was already enabled`,
+        ? `Maintenance mode enabled, pattern is now ${service.patterns.enabled}`
+        : `Maintenance mode is already enabled`,
     );
   }).pipe(Effect.provide(CloudflareService.Default)),
 );

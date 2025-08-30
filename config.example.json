@@ -1,8 +1,7 @@
 {
   "CLOUDFLARE": {
     "ACCOUNT_ID": null,
-    "ZONE_ID": null,
-    "SCRIPT_NAME": "maintenance-page-worker"
+    "ZONE_ID": null
   },
   "PAGE": {
     "STATUS_CODE": 503,

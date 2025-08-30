@@ -10,23 +10,21 @@ export const tokenPrompt = Prompt.password({
       : Effect.succeed(value),
 });
 
-const accountIdPrompt = Prompt.text({
-  message: "Enter your Cloudflare Account ID",
-  validate: (value) =>
-    value.length === 0
-      ? Effect.fail("Account ID cannot be empty")
-      : Effect.succeed(value),
-});
+export type SelectChoice = {
+  title: string;
+  value: string;
+  description?: string;
+  disabled?: boolean;
+};
 
-const zoneIdPrompt = Prompt.text({
-  message: "Enter your Cloudflare Zone ID",
-  validate: (value) =>
-    value.length === 0
-      ? Effect.fail("Zone ID cannot be empty")
-      : Effect.succeed(value),
-});
+export const makeAccountSelectPrompt = (choices: Array<SelectChoice>) =>
+  Prompt.select({
+    message: "Choose a Cloudflare account",
+    choices,
+  });
 
-export const cloudflareConfigPrompt = Prompt.all({
-  accountId: accountIdPrompt,
-  zoneId: zoneIdPrompt,
-});
+export const makeZoneSelectPrompt = (choices: Array<SelectChoice>) =>
+  Prompt.select({
+    message: "Choose a Cloudflare zone",
+    choices,
+  });
