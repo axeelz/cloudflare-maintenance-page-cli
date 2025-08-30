@@ -12,12 +12,8 @@ import {
   pipe,
   Redacted,
 } from "effect";
-import {
-  CLI_NAME,
-  type ConfigJSON,
-  PROJECT_ROOT,
-  SECRETS_NAME,
-} from "../constants";
+import exampleConfigPath from "../../config.example.json" with { type: "file" };
+import { CLI_NAME, type ConfigJSON, SECRETS_NAME } from "../constants";
 import { cloudflareConfigPrompt, tokenPrompt } from "./prompt";
 
 export const configPath = join(homedir(), ".config", CLI_NAME, "config.json");
@@ -30,7 +26,7 @@ const initConfig = Effect.gen(function* () {
       mkdir(dirname(configPath), { recursive: true }),
     );
 
-    const exampleConfig = Bun.file(join(PROJECT_ROOT, "config.example.json"));
+    const exampleConfig = Bun.file(exampleConfigPath as unknown as string);
     yield* Effect.promise(() =>
       Bun.write(configPath, exampleConfig, { mode: 0o600 }),
     );

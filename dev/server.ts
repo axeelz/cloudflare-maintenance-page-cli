@@ -4,7 +4,7 @@ import { generateMaintenanceHTML } from "../src/services/worker.js";
 
 const program = Effect.gen(function* () {
   const config = yield* getPageConfig;
-  const html = generateMaintenanceHTML(config);
+  const html = yield* Effect.promise(() => generateMaintenanceHTML(config));
 
   yield* Effect.all([
     Console.log("Starting development server..."),

@@ -1,5 +1,3 @@
-import { dirname } from "node:path";
-
 export type ConfigJSON = {
   CLOUDFLARE: {
     ACCOUNT_ID: string;
@@ -17,8 +15,6 @@ export type ConfigJSON = {
     STATUS_PAGE: string | null;
   };
 };
-
-export const PROJECT_ROOT = dirname(import.meta.dirname);
 
 export const CLI_NAME = "cloudflare-maintenance-page-cli";
 export const SECRETS_NAME = "cloudflare-token";

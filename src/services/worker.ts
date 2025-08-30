@@ -1,13 +1,14 @@
-import { join } from "node:path";
 import type { ScriptUpdateParams } from "cloudflare/resources/workers.mjs";
 import { toFile, type Uploadable } from "cloudflare/uploads.mjs";
 import { Eta } from "eta";
-import { PROJECT_ROOT } from "../constants";
+import templatePath from "../templates/index.eta" with { type: "file" };
 import type { PageConfig } from "./config";
 
-export const generateMaintenanceHTML = (options: PageConfig): string => {
-  const eta = new Eta({ views: join(PROJECT_ROOT, "src", "templates") });
-  return eta.render("index.eta", options);
+const templateFile = Bun.file(templatePath);
+
+export const generateMaintenanceHTML = async (options: PageConfig) => {
+  const eta = new Eta();
+  return eta.renderString(await templateFile.text(), options);
 };
 
 export const generateWorkerScript = (
@@ -42,7 +43,7 @@ export const createWorkerFile = async (
   metadata: ScriptUpdateParams.Metadata;
   files: Record<string, Uploadable>;
 }> => {
-  const html = generateMaintenanceHTML(options);
+  const html = await generateMaintenanceHTML(options);
   const workerScript = generateWorkerScript(
     html,
     options.statusCode,
