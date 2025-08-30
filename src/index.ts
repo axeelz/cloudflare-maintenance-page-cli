@@ -21,7 +21,7 @@ const mainCommand = Command.make("cfmp").pipe(
 
 const cli = Command.run(mainCommand, {
   name: "Cloudflare Maintenance Page CLI",
-  version: "v1.0.0",
+  version: "v0.1.0",
 });
 
 cli(process.argv).pipe(Effect.provide(BunContext.layer), BunRuntime.runMain);

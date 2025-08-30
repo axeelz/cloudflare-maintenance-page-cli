@@ -16,6 +16,6 @@ for (const platform of platforms) {
     outdir: "./dist",
     compile: platform,
     minify: true,
-    bytecode: true,
+    bytecode: false,
   });
 }

@@ -1,22 +1,26 @@
 # cloudflare-maintenance-page-cli
 
+Simple CLI using Cloudflare API and Workers to deploy a maintenance page to a domain
+
 ![screenshot](https://github.com/user-attachments/assets/3121c725-2ca6-49f3-8498-62296a82b84c)
 
 ## setup
 
-To install dependencies:
+Install [Bun](https://bun.sh/) runtime
+
+Install the CLI globally:
 
 ```bash
-bun install
+bun i -g cloudflare-maintenance-page-cli
 ```
 
-To link globally:
+Then use the command `cfmp` anywhere.
+
+Or run without installing globally:
 
 ```bash
-bun link
+bunx cloudflare-maintenance-page-cli <command>
 ```
-
-Then use `cfmp` anywhere.
 
 ## commands
 
@@ -47,6 +51,22 @@ The config has two sections:
 The CLI will deploy a Cloudflare Worker on your Cloudflare account named `maintenance-<domain>-<start_of_zone_id>`.
 
 Cloudflare Workers limits apply according to your plan. See [Cloudflare Workers limits](https://developers.cloudflare.com/workers/platform/limits/#worker-limits).
+
+## development
+
+To install dependencies:
+
+```bash
+bun install
+```
+
+To link globally:
+
+```bash
+bun link
+```
+
+Then use `cfmp` anywhere.
 
 ---
 
