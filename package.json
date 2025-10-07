@@ -1,6 +1,6 @@
 {
   "name": "cloudflare-maintenance-page-cli",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Simple CLI using Cloudflare API and Workers to deploy a maintenance page to a domain",
   "keywords": [
     "cloudflare",
@@ -11,17 +11,17 @@
   "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
-    "@biomejs/biome": "2.1.2",
-    "@types/bun": "1.2.21"
+    "@biomejs/biome": "2.2.5",
+    "@types/bun": "1.2.23"
   },
   "peerDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@effect/cli": "^0.69.2",
-    "@effect/platform-bun": "^0.79.0",
-    "cloudflare": "^4.5.0",
-    "eta": "^3.5.0",
+    "@effect/cli": "^0.71.0",
+    "@effect/platform-bun": "^0.81.1",
+    "cloudflare": "^5.2.0",
+    "eta": "^4.0.1",
     "open": "^10.2.0"
   },
   "scripts": {
