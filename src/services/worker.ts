@@ -41,7 +41,7 @@ export const createWorkerFile = async (
   options: PageConfig,
 ): Promise<{
   metadata: ScriptUpdateParams.Metadata;
-  files: Record<string, Uploadable>;
+  files: Uploadable[];
 }> => {
   const html = await generateMaintenanceHTML(options);
   const workerScript = generateWorkerScript(
@@ -54,12 +54,12 @@ export const createWorkerFile = async (
   return {
     metadata: {
       main_module: "worker.js",
-      compatibility_date: "2025-08-28",
+      compatibility_date: "2025-10-08",
     },
-    files: {
-      "worker.js": await toFile(Buffer.from(workerScript), "worker.js", {
+    files: [
+      await toFile(Buffer.from(workerScript), "worker.js", {
         type: "application/javascript+module",
       }),
-    },
+    ],
   };
 };
