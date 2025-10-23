@@ -8,6 +8,10 @@
     "cloudflare-workers",
     "cli"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/axeelz/cloudflare-maintenance-page-cli"
+  },
   "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
