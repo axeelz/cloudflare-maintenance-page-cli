@@ -1,4 +1,4 @@
-name: Node.js Package with Bun
+name: Node.js Package
 
 on:
   release:
@@ -9,24 +9,17 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
-      - run: bun ci
-
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - run: bun ci
-      - run: bunx npm publish --provenance
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Update npm
+        run: npm install -g npm@latest
+      
+      - run: npm publish
