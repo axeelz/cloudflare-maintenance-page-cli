@@ -54,7 +54,7 @@ export const createWorkerFile = async (
   return {
     metadata: {
       main_module: "worker.js",
-      compatibility_date: "2025-10-08",
+      compatibility_date: "2025-10-23",
     },
     files: [
       await toFile(Buffer.from(workerScript), "worker.js", {
